@@ -1,6 +1,9 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
+import path from "path";
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 config();
 
 import * as discord from "./discord.js";
@@ -12,12 +15,13 @@ import * as storage from "./storage.js";
 
 const app = express();
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(express.static("public"));
 
 /**
  * Just a happy little route to show our server is up.
  */
 app.get("/", (req, res) => {
-    res.send("👋");
+    res.send("Hi :D");
 });
 
 /**
@@ -74,7 +78,7 @@ app.get("/discord-oauth-callback", async (req, res) => {
         // 3. Update the users metadata, assuming future updates will be posted to the `/update-metadata` endpoint
         await updateMetadata(userId);
 
-        res.send("You did it!  Now go back to Discord.");
+        res.sendFile(path.resolve(__dirname, "discord-oauth-callback.html"));
     } catch (e) {
         console.error(e);
         res.sendStatus(500);
