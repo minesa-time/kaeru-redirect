@@ -128,7 +128,6 @@ async function updateMetadata(userId) {
     await discord.pushMetadata(userId, tokens, metadata);
 }
 
-const port = 3000;
-app.listen(port, () => {
+app.listen(process.env.PORT, () => {
     console.log(`Example app listening on port ${port}`);
 });
