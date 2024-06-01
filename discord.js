@@ -63,6 +63,7 @@ export async function getAccessToken(userId, tokens) {
         });
         if (response.ok) {
             const tokens = await response.json();
+            tokens.access_token = tokens.access_token;
             tokens.expires_at = Date.now() + tokens.expires_in * 1000;
             await storage.storeDiscordTokens(userId, tokens);
             return tokens.access_token;
@@ -97,7 +98,7 @@ export async function pushMetadata(userId, tokens, metadata) {
     const url = `https://discord.com/api/v10/users/@me/applications/${process.env.CLIENT_ID}/role-connection`;
     const accessToken = await getAccessToken(userId, tokens);
     const body = {
-        platform_name: "Moderation",
+        platform_name: "Minesa Systems",
         metadata,
     };
     const response = await fetch(url, {
@@ -115,12 +116,7 @@ export async function pushMetadata(userId, tokens, metadata) {
     }
 }
 
-/**
- * Fetch the metadata currently pushed to Discord for the currently logged
- * in user, for this specific bot.
- */
 export async function getMetadata(userId, tokens) {
-    // GET /users/@me/applications/:id/role-connection
     const url = `https://discord.com/api/v10/users/@me/applications/${process.env.CLIENT_ID}/role-connection`;
     const accessToken = await getAccessToken(userId, tokens);
     const response = await fetch(url, {
