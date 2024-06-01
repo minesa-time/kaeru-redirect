@@ -1,18 +1,44 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
+import fs from "fs";
 import path from "path";
+
+const currentFilePath = import.meta.url;
+const currentDirPath = path.dirname(
+    currentFilePath.replace(/^file:[/][/]/, "")
+);
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 config();
 
 import * as discord from "./discord.js";
 import * as storage from "./storage.js";
-import { isRoleClaimValid } from "../shortcuts/database.js";
 
 const app = express();
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static("public"));
+
+const linkedRoleFilePath = path.resolve(
+    currentDirPath,
+    "../../data/linked-role.json"
+);
+export function getLinkedRoleData() {
+    try {
+        const data = fs.readFileSync(linkedRoleFilePath, "utf8");
+        return JSON.parse(data);
+    } catch (err) {
+        console.error("Error reading linked-role.json:", err);
+        return {};
+    }
+}
+
+// Function to check if the role and user ID match
+export function isRoleClaimValid(roleName, userId) {
+    const linkedRoleData = getLinkedRoleData();
+    console.log(linkedRoleData[roleName]?.includes(userId));
+    return linkedRoleData[roleName]?.includes(userId) || false;
+}
 
 app.get("/", (req, res) => {
     res.send("👋");
