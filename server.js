@@ -19,7 +19,10 @@ const app = express();
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static("public"));
 
-const linkedRoleFilePath = path.resolve(currentDirPath, "./linked-role.json");
+const linkedRoleFilePath = path.resolve(
+    currentDirPath,
+    "./data/linked-role.json"
+);
 export function getLinkedRoleData() {
     try {
         const data = fs.readFileSync(linkedRoleFilePath, "utf8");
