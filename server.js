@@ -2,7 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
 import path from "path";
-
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 config();
 
 import * as discord from "./discord.js";
